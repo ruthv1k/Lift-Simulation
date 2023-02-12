@@ -72,6 +72,9 @@ function addFloorsToScene() {
                 }
             }
 
+            // open and close the doors
+            handleDoors(closestLift)
+
             // condition to handle edge case
             if (store.state[closestLift].floor <= requestedFloorNumber) {
                 moveLift(closestLift, requestedFloorNumber)
@@ -104,6 +107,9 @@ function addFloorsToScene() {
                     store.state[closestLift].floor = requestedFloorNumber
                 }
             }
+
+            // open and close the doors
+            handleDoors(closestLift)
 
             if (store.state[closestLift].floor >= requestedFloorNumber) {
                 moveLift(closestLift, requestedFloorNumber)
@@ -145,4 +151,25 @@ function moveLift(liftId, floorNumber) {
 
     const liftContainer = liftsContainer.querySelectorAll("div")[liftId]
     liftContainer.style.bottom = `${(lift.floor - 1) * 100 + lift.floor * 16}px`
+}
+
+function handleDoors(liftId) {
+    const liftThatHasToOpenDoors =
+        liftsContainer.querySelectorAll("div")[liftId]
+    const doors = liftThatHasToOpenDoors.querySelectorAll("span")
+
+    if (doors.length === 2) {
+        const leftDoor = doors[0]
+        const rightDoor = doors[1]
+
+        setTimeout(() => {
+            leftDoor.style.width = "1%"
+            rightDoor.style.width = "1%"
+
+            setTimeout(() => {
+                leftDoor.style.width = "49%"
+                rightDoor.style.width = "49%"
+            }, 2500)
+        }, 2500)
+    }
 }
