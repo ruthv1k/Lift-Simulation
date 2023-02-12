@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Lift Simulation</title>
+        <link rel="stylesheet" href="styles/main.css" />
+        <script src="scripts/main.js" defer></script>
+    </head>
+    <body>
+        <div class="w-auto min-h-screen flex items-center justify-center">
+            <!-- Input Container -->
+            <div id="input">
+                <div class="input-field-block">
+                    <label for="numOfFloors" class="input-label"
+                        >Number of Floors</label
+                    >
+                    <input
+                        type="number"
+                        id="numOfFloors"
+                        name="numOfFloors"
+                        class="input-field"
+                        min="2"
+                    />
+                </div>
+                <div class="input-field-block">
+                    <label for="numOfLifts" class="input-label"
+                        >Number of Lifts</label
+                    >
+                    <input
+                        type="number"
+                        id="numOfLifts"
+                        name="numOfLifts"
+                        class="input-field"
+                        min="1"
+                    />
+                </div>
+                <button onclick="initialize()" class="primary-button">
+                    Continue
+                </button>
+            </div>
+
+            <!-- Output Container -->
+            <div id="floorsContainer">
+                <div id="liftsContainer"></div>
+            </div>
+        </div>
+    </body>
+</html>
