@@ -27,6 +27,7 @@ function initialize() {
     store.state.push({
       id: i,
       floor: 1,
+      isAvailable: 1,
     })
   }
 
@@ -66,6 +67,11 @@ function addFloorsToScene() {
           continue
         }
 
+        // skip all the occupied lifts
+        if (!lift.isAvailable) {
+          continue
+        }
+
         // find the closest lift
         const diff = Math.abs(lift.floor - requestedFloorNumber)
         if (diff < closestDiff) {
@@ -75,7 +81,10 @@ function addFloorsToScene() {
       }
 
       // condition to handle edge case
-      if (store.state[closestLift].floor <= requestedFloorNumber) {
+      if (
+        store.state[closestLift].floor <= requestedFloorNumber &&
+        store.state[closestLift].isAvailable
+      ) {
         moveLift(closestLift, requestedFloorNumber)
       }
     })
@@ -98,6 +107,11 @@ function addFloorsToScene() {
           continue
         }
 
+        // skip all the occupied lifts
+        if (!lift.isAvailable) {
+          continue
+        }
+
         // find the closest lift
         const diff = Math.abs(lift.floor - requestedFloorNumber)
         if (diff < closestDiff) {
@@ -106,7 +120,10 @@ function addFloorsToScene() {
         }
       }
 
-      if (store.state[closestLift].floor >= requestedFloorNumber) {
+      if (
+        store.state[closestLift].floor >= requestedFloorNumber &&
+        store.state[closestLift].isAvailable
+      ) {
         moveLift(closestLift, requestedFloorNumber)
       }
     })
@@ -144,6 +161,9 @@ function moveLift(liftId, floorNumber) {
   const lift = store.state[liftId]
   const oldFloor = lift.floor
 
+  lift.isAvailable = 0
+  lift.floor = floorNumber
+
   const liftContainer = liftsContainer.querySelectorAll('div')[liftId]
   const timeToTravelInSeconds =
     (oldFloor - floorNumber > 0
@@ -153,13 +173,14 @@ function moveLift(liftId, floorNumber) {
   liftContainer.style.transition = `all ${timeToTravelInSeconds}s ease`
 
   liftContainer.style.bottom = `${(floorNumber - 1) * 100 + floorNumber * 16}px`
-  lift.floor = floorNumber
+
   setTimeout(() => {
     handleDoors(liftId)
   }, timeToTravelInSeconds * 1000)
 }
 
 function handleDoors(liftId) {
+  const lift = store.state[liftId]
   const liftThatHasToOpenDoors = liftsContainer.querySelectorAll('div')[liftId]
   const doors = liftThatHasToOpenDoors.querySelectorAll('span')
 
@@ -173,6 +194,8 @@ function handleDoors(liftId) {
     setTimeout(() => {
       leftDoor.style.width = '49%'
       rightDoor.style.width = '49%'
+
+      lift.isAvailable = 1
     }, 2500)
   }
 }
