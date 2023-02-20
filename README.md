@@ -13,6 +13,6 @@ A simple lift simulation project using HTML, CSS and vanilla JS
    
   Milestone 2:
    - [x] Lift having doors open in 2.5s, then closing in another 2.5s
-   - [ ] Lift moving at 2s per floor
+   - [x] Lift moving at 2s per floor
    - [ ] Lift stopping at every floor where it was called
-   - [ ] Mobile friendly design
+   - [x] Mobile friendly design
