@@ -12,10 +12,18 @@ body {
 }
 
 /* output */
-#floorsContainer {
+#output {
   position: relative;
   height: fit-content;
   padding: 1rem 1rem 0rem 1rem;
+}
+
+#floorsContainer {
+  z-index: 10;
+}
+
+#liftsContainer {
+  z-index: 100;
 }
 
 .floor {
@@ -35,7 +43,7 @@ body {
     width: 100%;
   }
 
-  #floorsContainer {
+  #output {
     display: none;
     width: 100%;
     overflow: scroll;
@@ -52,7 +60,7 @@ body {
 .lift {
   width: 40px;
   height: 80px;
-  background-color: rgba(70, 126, 246, 0.3);
+  background-color: #bac5e1;
   display: flex;
   align-items: center;
   justify-content: center;

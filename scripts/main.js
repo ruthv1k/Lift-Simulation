@@ -4,6 +4,7 @@ const store = {
   state: [],
 }
 
+const outputContainer = document.querySelector('#output')
 const floorsContainer = document.querySelector('#floorsContainer')
 const liftsContainer = document.querySelector('#liftsContainer')
 
@@ -20,7 +21,7 @@ function initialize() {
   inputContainer.style.display = 'none'
 
   // show the output form
-  floorsContainer.style.display = 'block'
+  outputContainer.style.display = 'block'
 
   // push initial data to store
   for (let i = 0; i < store.lifts; i++) {
