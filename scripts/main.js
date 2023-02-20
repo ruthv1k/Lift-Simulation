@@ -167,14 +167,12 @@ function handleDoors(liftId) {
     const leftDoor = doors[0]
     const rightDoor = doors[1]
 
-    setTimeout(() => {
-      leftDoor.style.width = '1%'
-      rightDoor.style.width = '1%'
+    leftDoor.style.width = '1%'
+    rightDoor.style.width = '1%'
 
-      setTimeout(() => {
-        leftDoor.style.width = '49%'
-        rightDoor.style.width = '49%'
-      }, 2500)
+    setTimeout(() => {
+      leftDoor.style.width = '49%'
+      rightDoor.style.width = '49%'
     }, 2500)
   }
 }
