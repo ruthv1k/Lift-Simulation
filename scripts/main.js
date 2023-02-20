@@ -54,84 +54,63 @@ function addFloorsToScene() {
     upButton.innerHTML = 'Up'
     upButton.value = i
 
-    // add a click event on the up button to move the closest lift(s) up
-    upButton.addEventListener('click', function () {
-      const requestedFloorNumber = parseInt(this.value)
-      let closestLift = 0
-      let closestDiff = store.floors
-
-      for (let j = 0; j < store.lifts; j++) {
-        const lift = store.state[j]
-
-        // skip lifts above requested floor
-        if (lift.floor >= requestedFloorNumber) {
-          continue
-        }
-
-        // skip all the occupied lifts
-        if (!lift.isAvailable) {
-          continue
-        }
-
-        // find the closest lift
-        const diff = Math.abs(lift.floor - requestedFloorNumber)
-        if (diff < closestDiff) {
-          closestLift = j
-          closestDiff = diff
-        }
-      }
-
-      // condition to handle edge case
-      if (
-        store.state[closestLift].floor <= requestedFloorNumber &&
-        store.state[closestLift].isAvailable
-      ) {
-        moveLift(closestLift, requestedFloorNumber)
-      }
-    })
-
     const downButton = document.createElement('button')
     downButton.classList.add('down-button')
     downButton.innerHTML = 'Down'
     downButton.value = i
 
+    upButton.addEventListener('click', function () {
+      findClosestAvailableLift(parseInt(this.value), 'up')
+    })
+
     downButton.addEventListener('click', function () {
-      const requestedFloorNumber = parseInt(this.value)
-      let closestLift = 0
-      let closestDiff = store.floors
-
-      for (let j = 0; j < store.lifts; j++) {
-        const lift = store.state[j]
-
-        // skip lifts below requested floor
-        if (lift.floor <= requestedFloorNumber) {
-          continue
-        }
-
-        // skip all the occupied lifts
-        if (!lift.isAvailable) {
-          continue
-        }
-
-        // find the closest lift
-        const diff = Math.abs(lift.floor - requestedFloorNumber)
-        if (diff < closestDiff) {
-          closestLift = j
-          closestDiff = diff
-        }
-      }
-
-      if (
-        store.state[closestLift].floor >= requestedFloorNumber &&
-        store.state[closestLift].isAvailable
-      ) {
-        moveLift(closestLift, requestedFloorNumber)
-      }
+      findClosestAvailableLift(parseInt(this.value), 'down')
     })
 
     floor.appendChild(upButton)
     floor.appendChild(downButton)
     floorsContainer.append(floor)
+  }
+}
+
+function findClosestAvailableLift(requestedFloorNumber, direction) {
+  let closestLift = 0
+  let closestDiff = store.floors
+
+  for (let j = 0; j < store.lifts; j++) {
+    const lift = store.state[j]
+
+    // skip lifts that are not in right direction
+    if (
+      (requestedFloorNumber > lift.floor && direction === 'down') ||
+      (requestedFloorNumber < lift.floor && direction === 'up')
+    ) {
+      continue
+    }
+
+    // skip all the occupied lifts
+    if (!lift.isAvailable) {
+      continue
+    }
+
+    // find the closest lift
+    const diff = Math.abs(lift.floor - requestedFloorNumber)
+    if (diff < closestDiff) {
+      closestLift = j
+      closestDiff = diff
+    }
+  }
+
+  // handle edge case
+  const currentLift = store.state[closestLift]
+  const isNotTheSameFloor = currentLift.floor !== requestedFloorNumber
+  const isAvailable = currentLift.isAvailable
+  const isRightDirection =
+    (requestedFloorNumber > currentLift.floor && direction === 'up') ||
+    (requestedFloorNumber < currentLift.floor && direction === 'down')
+
+  if (isNotTheSameFloor && isAvailable && isRightDirection) {
+    moveLift(closestLift, requestedFloorNumber)
   }
 }
 
@@ -153,7 +132,6 @@ function addLiftsToScene() {
     rightDoor.classList.add('right-door')
 
     liftContainer.append(leftDoor, rightDoor)
-
     liftsContainer.appendChild(liftContainer)
   }
 }
@@ -170,17 +148,18 @@ function moveLift(liftId, floorNumber) {
     (oldFloor - floorNumber > 0
       ? oldFloor - floorNumber
       : (oldFloor - floorNumber) * -1) * 2
+  const timeToTravelInMilliSeconds = timeToTravelInSeconds * 1000
 
   liftContainer.style.transition = `all ${timeToTravelInSeconds}s ease`
 
   liftContainer.style.bottom = `${(floorNumber - 1) * 100 + floorNumber * 16}px`
 
   setTimeout(() => {
-    handleDoors(liftId)
-  }, timeToTravelInSeconds * 1000)
+    openAndCloseDoors(liftId)
+  }, timeToTravelInMilliSeconds)
 }
 
-function handleDoors(liftId) {
+function openAndCloseDoors(liftId) {
   const lift = store.state[liftId]
   const liftThatHasToOpenDoors = liftsContainer.querySelectorAll('div')[liftId]
   const doors = liftThatHasToOpenDoors.querySelectorAll('span')
